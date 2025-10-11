@@ -1,0 +1,2143 @@
+<!doctype html>
+<!DOCTYPE html>
+<html>
+<head><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediConnect Pro - Advanced Telemedicine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 0.8rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo h2 {
+            color: #2563eb;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-menu a:hover {
+            color: #2563eb;
+            background: #f1f5f9;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-login, .btn-signup, .btn-primary, .btn-danger, .btn-success, .btn-warning {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 2px solid #2563eb;
+            color: #2563eb;
+        }
+
+        .btn-login:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-signup, .btn-primary {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-signup:hover, .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #2563eb;
+            padding: 0.5rem;
+            min-height: 44px;
+            min-width: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 80vh;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+        }
+
+        .hero-content {
+            flex: 1;
+            padding-right: 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .placeholder-image {
+            width: 100%;
+            max-width: 500px;
+            height: 350px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: #f8fafc;
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: #2563eb;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #2563eb;
+        }
+
+        .service-card h3 {
+            color: #2563eb;
+            margin-bottom: 1.2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .service-card p {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features {
+            text-align: left;
+            margin-top: 1.5rem;
+        }
+
+        .service-features li {
+            margin-bottom: 0.5rem;
+            color: #64748b;
+            list-style: none;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .service-features li:before {
+            content: "✓";
+            color: #10b981;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Appointment Form */
+        .appointment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            max-width: 600px;
+        }
+
+        .appointment-form input,
+        .appointment-form select,
+        .appointment-form textarea {
+            padding: 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            width: 100%;
+            min-height: 54px;
+        }
+
+        .appointment-form input:focus,
+        .appointment-form select:focus,
+        .appointment-form textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .appointments-list {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .appointment-item {
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .appointment-item:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .appointment-info h4 {
+            color: #1e293b;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .appointment-status {
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.8rem;
+        }
+
+        .status-confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            max-width: 600px;
+        }
+
+        .messages-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .message-item {
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .message-item:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        /* Video Call Section */
+        .video-call-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 400px;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .video-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .video-controls {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            background: rgba(0,0,0,0.7);
+            padding: 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .video-controls button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            min-height: 44px;
+        }
+
+        .video-controls button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .call-status {
+            text-align: center;
+            padding: 2rem;
+            background: #f0f9ff;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .doctor-controls-panel {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .doctor-controls-panel h3 {
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .recording-controls {
+            background: #fff7ed;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border: 2px solid #fed7aa;
+        }
+
+        .recording-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #dc2626;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+
+        .recording-dot {
+            width: 12px;
+            height: 12px;
+            background: #dc2626;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        .recordings-list {
+            margin-top: 2rem;
+        }
+
+        .recording-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .recording-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .recording-player {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1.5s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Auth Modal */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1002;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 450px;
+            margin: 10% auto;
+            position: relative;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2.5rem;
+            border-bottom: 3px solid #e2e8f0;
+            gap: 0;
+        }
+
+        .auth-tab {
+            padding: 1.2rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            min-height: 60px;
+        }
+
+        .auth-tab.active {
+            border-bottom: 4px solid #2563eb;
+            color: #2563eb;
+            background: #f8fafc;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .auth-form input,
+        .auth-form select {
+            padding: 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 100%;
+            min-height: 54px;
+            transition: all 0.3s;
+        }
+
+        .auth-form input:focus,
+        .auth-form select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .close-auth-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #64748b;
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-credentials {
+            background: #f0f9ff;
+            border: 2px solid #e0f2fe;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .demo-credentials h4 {
+            color: #0369a1;
+            margin-bottom: 0.8rem;
+        }
+
+        .demo-account {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border: 1px solid #e0f2fe;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .active {
+            display: block !important;
+        }
+
+        .welcome-user {
+            margin-right: 1rem;
+            font-weight: 600;
+            color: #2563eb;
+            font-size: 1rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 90px;
+            right: 2rem;
+            left: 2rem;
+            padding: 1.2rem 2rem;
+            background: #10b981;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1001;
+            transform: translateY(-100px);
+            transition: transform 0.4s;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        .notification.error {
+            background: #ef4444;
+        }
+
+        .notification.warning {
+            background: #f59e0b;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .nav-menu {
+                display: none;
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                gap: 0;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu a {
+                padding: 1.2rem 1.5rem;
+                width: 100%;
+                text-align: center;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 1.1rem;
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-menu a:last-child {
+                border-bottom: none;
+            }
+
+            .section {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-content {
+                padding-right: 0;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .placeholder-image {
+                height: 250px;
+                max-width: 400px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .video-wrapper {
+                height: 300px;
+            }
+
+            .video-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 90%;
+            }
+
+            .video-controls button {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .control-buttons {
+                flex-direction: column;
+            }
+
+            .auth-modal-content {
+                padding: 2rem;
+            }
+
+            .auth-tab {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+</head>
+<body>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>MediConnect Pro</h2>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link" data-section="home">Home</a></li>
+                <li><a href="#services" class="nav-link" data-section="services">Services</a></li>
+                <li><a href="#appointments" class="nav-link" data-section="appointments">Appointments</a></li>
+                <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+                <li><a href="#doctor-portal" class="nav-link doctor-portal-link hidden" data-section="doctor-portal">Doctor Portal</a></li>
+            </ul>
+            <div class="nav-buttons" id="authButtons">
+                <button class="btn-login" id="loginBtn">Login</button>
+                <button class="btn-signup" id="signupBtn">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notification System -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-modal-content">
+            <button class="close-auth-modal" id="closeAuthModal" aria-label="Close modal">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <div class="auth-form" id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email Address" required value="patient@demo.com">
+                <input type="password" id="loginPassword" placeholder="Password" required value="demo123">
+                <button class="btn-primary" id="submitLogin">Login</button>
+                
+                <div class="demo-credentials">
+                    <h4>Demo Accounts (Pre-filled):</h4>
+                    <div class="demo-account">
+                        <strong>Patient:</strong> patient@demo.com / demo123
+                    </div>
+                    <div class="demo-account">
+                        <strong>Doctor:</strong> doctor@demo.com / demo123
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-form hidden" id="signupForm">
+                <input type="text" id="signupName" placeholder="Full Name" required>
+                <input type="email" id="signupEmail" placeholder="Email Address" required>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <select id="userType">
+                    <option value="patient">Patient</option>
+                    <option value="doctor">Doctor</option>
+                </select>
+                <button class="btn-primary" id="submitSignup">Sign Up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Advanced Virtual Healthcare Platform</h1>
+                <p>Secure video consultations with licensed healthcare professionals. Recorded sessions, appointment tracking, and seamless communication across all devices.</p>
+                <div class="hero-actions">
+                    <button class="btn-primary" id="startConsultation">Start Video Consultation</button>
+                    <button class="btn-success" onclick="showSection('services')">View Services</button>
+                    <button class="btn-warning" onclick="showSection('appointments')">Book Appointment</button>
+                </div>
+                <div style="margin-top: 2rem; padding: 1.5rem; background: #f0f9ff; border-radius: 10px;">
+                    <h4 style="color: #0369a1; margin-bottom: 1rem;">Quick Start:</h4>
+                    <p style="color: #64748b;">Click "Login" above and use demo credentials to test all features immediately!</p>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="placeholder-image">
+                    Advanced Telemedicine
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Our Healthcare Services</h1>
+                <p>Comprehensive medical services delivered virtually with the highest standards of care and convenience.</p>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🎥</div>
+                        <h3>Video Consultations</h3>
+                        <p>Face-to-face virtual appointments with healthcare providers from the comfort of your home.</p>
+                        <div class="service-features">
+                            <li>Real-time video calls with doctors</li>
+                            <li>Secure and encrypted communication</li>
+                            <li>Screen sharing for medical reports</li>
+                            <li>Instant connection without downloads</li>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">💊</div>
+                        <h3>Prescription Services</h3>
+                        <p>Get your prescriptions renewed and managed without visiting the clinic.</p>
+                        <div class="service-features">
+                            <li>Digital prescription renewal</li>
+                            <li>Medication management</li>
+                            <li>Prescription delivery options</li>
+                            <li>Automatic refill reminders</li>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">🩺</div>
+                        <h3>Medical Advice</h3>
+                        <p>Professional medical guidance for non-emergency conditions from licensed doctors.</p>
+                        <div class="service-features">
+                            <li>24/7 medical consultation</li>
+                            <li>Specialist doctor access</li>
+                            <li>Symptom assessment</li>
+                            <li>Treatment recommendations</li>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">📋</div>
+                        <h3>Follow-up Care</h3>
+                        <p>Convenient follow-up appointments after treatment to monitor your progress.</p>
+                        <div class="service-features">
+                            <li>Progress tracking</li>
+                            <li>Treatment plan adjustments</li>
+                            <li>Recovery monitoring</li>
+                            <li>Continuous care coordination</li>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">🧪</div>
+                        <h3>Lab Test Results</h3>
+                        <p>Access and discuss your laboratory test results with healthcare professionals.</p>
+                        <div class="service-features">
+                            <li>Digital test result storage</li>
+                            <li>Result interpretation</li>
+                            <li>Trend analysis</li>
+                            <li>Secure document sharing</li>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">🏥</div>
+                        <h3>Specialist Referrals</h3>
+                        <p>Get referred to specialized medical professionals when needed.</p>
+                        <div class="service-features">
+                            <li>Specialist doctor network</li>
+                            <li>Seamless referral process</li>
+                            <li>Medical record sharing</li>
+                            <li>Coordinated care plans</li>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <button class="btn-primary" onclick="showSection('home')">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointments Section -->
+    <section id="appointments" class="section">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Book an Appointment</h1>
+                <p>Schedule your virtual consultation with our specialist doctors. Choose your preferred time and doctor.</p>
+                
+                <div class="appointment-form">
+                    <input type="text" id="patientName" placeholder="Full Name" required>
+                    <input type="email" id="patientEmail" placeholder="Email Address" required>
+                    <input type="tel" id="patientPhone" placeholder="Phone Number" required>
+                    <select id="doctorSelect" required>
+                        <option value="">Select Doctor</option>
+                        <option value="dr-smith">Dr. Sarah Smith - Cardiology</option>
+                        <option value="dr-johnson">Dr. Mike Johnson - Pediatrics</option>
+                        <option value="dr-williams">Dr. Lisa Williams - Dermatology</option>
+                        <option value="dr-brown">Dr. James Brown - General Medicine</option>
+                    </select>
+                    <input type="datetime-local" id="appointmentTime" required>
+                    <textarea id="symptoms" placeholder="Describe your symptoms, concerns, and any relevant medical history" rows="4" required></textarea>
+                    <button class="btn-primary" id="bookAppointment">Book Appointment</button>
+                </div>
+                
+                <div class="appointments-list">
+                    <h3>Your Appointments</h3>
+                    <div id="appointmentsContainer">
+                        <p>No appointments booked yet. Book your first appointment above!</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <button class="btn-primary" onclick="showSection('home')">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Contact Us</h1>
+                <p>Get in touch with our healthcare team for any questions, support, or feedback.</p>
+                
+                <div class="contact-form">
+                    <input type="text" id="contactName" placeholder="Your Name" required>
+                    <input type="email" id="contactEmail" placeholder="Your Email" required>
+                    <input type="tel" id="contactPhone" placeholder="Your Phone" required>
+                    <select id="contactDepartment">
+                        <option value="">Select Department</option>
+                        <option value="general">General Inquiry</option>
+                        <option value="technical">Technical Support</option>
+                        <option value="billing">Billing Questions</option>
+                        <option value="medical">Medical Questions</option>
+                        <option value="feedback">Feedback & Suggestions</option>
+                    </select>
+                    <textarea id="contactMessage" placeholder="Your message... Please include any relevant details so we can assist you better." rows="6" required></textarea>
+                    <button class="btn-primary" id="sendMessage">Send Message</button>
+                </div>
+                
+                <div class="messages-section">
+                    <h3>Contact Information</h3>
+                    <div class="message-item">
+                        <h4>📞 Phone Support</h4>
+                        <p><strong>General Inquiries:</strong> 1-800-MED-CONNECT (1-800-633-2666)</p>
+                        <p><strong>Emergency Support:</strong> 1-800-EMER-GENCY (1-800-363-7436)</p>
+                        <p><strong>Hours:</strong> Monday-Friday 8:00 AM - 8:00 PM EST</p>
+                    </div>
+                    
+                    <div class="message-item">
+                        <h4>📧 Email Support</h4>
+                        <p><strong>General:</strong> support@mediconnect.com</p>
+                        <p><strong>Medical Questions:</strong> medical@mediconnect.com</p>
+                        <p><strong>Technical Support:</strong> tech@mediconnect.com</p>
+                        <p><strong>Response Time:</strong> Within 24 hours</p>
+                    </div>
+                    
+                    <div class="message-item">
+                        <h4>🏢 Office Address</h4>
+                        <p><strong>MediConnect Headquarters</strong></p>
+                        <p>123 Healthcare Avenue</p>
+                        <p>Medical District, MD 12345</p>
+                        <p>United States</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <button class="btn-primary" onclick="showSection('home')">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Consultation Section -->
+    <section id="video-consultation" class="section">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Video Consultation</h1>
+                <p>Secure video call with your healthcare provider. Both patient and doctor cameras are active with recording capabilities.</p>
+                
+                <div class="video-call-container">
+                    <div class="video-grid">
+                        <!-- Patient Camera -->
+                        <div class="video-wrapper">
+                            <div class="video-label" id="patientLabel">Patient Camera</div>
+                            <video id="patientVideo" autoplay muted playsinline></video>
+                            <div class="video-controls">
+                                <button id="patientMuteAudio">Mute Audio</button>
+                                <button id="patientMuteVideo">Turn Off Video</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Doctor Camera -->
+                        <div class="video-wrapper">
+                            <div class="video-label" id="doctorLabel">Doctor Camera</div>
+                            <video id="doctorVideo" autoplay playsinline></video>
+                            <div class="video-controls">
+                                <button id="doctorMuteAudio">Mute Audio</button>
+                                <button id="doctorMuteVideo">Turn Off Video</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Call Status -->
+                    <div class="call-status">
+                        <div class="spinner" id="callSpinner"></div>
+                        <p id="callStatus">Initializing cameras...</p>
+                    </div>
+
+                    <!-- Main Call Controls -->
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <button id="endCall" class="btn-danger" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                            End Call
+                        </button>
+                    </div>
+
+                    <!-- Recording Controls -->
+                    <div class="recording-controls">
+                        <h3>Call Recording</h3>
+                        <p style="color: #92400e; margin-bottom: 1rem;">Record your consultation for future reference. All recordings are stored securely.</p>
+                        <div class="control-buttons">
+                            <button id="startRecording" class="btn-primary">Start Recording</button>
+                            <button id="stopRecording" class="btn-danger" disabled>Stop Recording</button>
+                            <button id="playRecording" class="btn-success" disabled>Play Recording</button>
+                        </div>
+                        <div id="recordingIndicator" class="recording-indicator hidden">
+                            <div class="recording-dot"></div>
+                            <span>Recording in progress... Duration: <span id="recordingTimer">00:00</span></span>
+                        </div>
+                        <audio id="recordingPlayback" controls class="hidden" style="width: 100%; margin-top: 1rem;"></audio>
+                    </div>
+
+                    <!-- Recordings List -->
+                    <div class="recordings-list">
+                        <h3>Previous Recordings</h3>
+                        <div id="recordingsContainer">
+                            <p>No recordings available. Start a recording during your consultation.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <button class="btn-primary" onclick="showSection('home')">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Enhanced Database with full functionality
+        class Database {
+            constructor() {
+                this.initializeData();
+            }
+
+            initializeData() {
+                if (!localStorage.getItem('users')) {
+                    const demoUsers = [
+                        { 
+                            id: 1, 
+                            email: 'patient@demo.com', 
+                            password: 'demo123', 
+                            name: 'Demo Patient', 
+                            type: 'patient', 
+                            createdAt: new Date().toISOString() 
+                        },
+                        { 
+                            id: 2, 
+                            email: 'doctor@demo.com', 
+                            password: 'demo123', 
+                            name: 'Demo Doctor', 
+                            type: 'doctor', 
+                            createdAt: new Date().toISOString() 
+                        }
+                    ];
+                    localStorage.setItem('users', JSON.stringify(demoUsers));
+                }
+
+                if (!localStorage.getItem('appointments')) {
+                    localStorage.setItem('appointments', JSON.stringify([]));
+                }
+
+                if (!localStorage.getItem('messages')) {
+                    localStorage.setItem('messages', JSON.stringify([]));
+                }
+
+                if (!localStorage.getItem('recordings')) {
+                    localStorage.setItem('recordings', JSON.stringify([]));
+                }
+            }
+
+            get users() {
+                try {
+                    return JSON.parse(localStorage.getItem('users')) || [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            get appointments() {
+                return JSON.parse(localStorage.getItem('appointments')) || [];
+            }
+
+            get messages() {
+                return JSON.parse(localStorage.getItem('messages')) || [];
+            }
+
+            get recordings() {
+                return JSON.parse(localStorage.getItem('recordings')) || [];
+            }
+
+            saveUsers(users) {
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            saveAppointments(appointments) {
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+            }
+
+            saveMessages(messages) {
+                localStorage.setItem('messages', JSON.stringify(messages));
+            }
+
+            saveRecordings(recordings) {
+                localStorage.setItem('recordings', JSON.stringify(recordings));
+            }
+
+            addUser(user) {
+                const users = this.users;
+                
+                if (this.findUser(user.email)) {
+                    throw new Error('User already exists with this email');
+                }
+
+                users.push({
+                    ...user,
+                    id: Date.now(),
+                    createdAt: new Date().toISOString()
+                });
+
+                this.saveUsers(users);
+                return user;
+            }
+
+            findUser(email) {
+                const users = this.users;
+                return users.find(user => user.email.toLowerCase() === email.toLowerCase());
+            }
+
+            validateUser(email, password) {
+                const user = this.findUser(email);
+                if (!user) {
+                    throw new Error('User not found');
+                }
+                if (user.password !== password) {
+                    throw new Error('Invalid password');
+                }
+                return user;
+            }
+
+            addAppointment(appointment) {
+                const appointments = this.appointments;
+                appointments.push({
+                    ...appointment,
+                    id: Date.now(),
+                    createdAt: new Date().toISOString(),
+                    status: 'pending'
+                });
+                this.saveAppointments(appointments);
+                return appointment;
+            }
+
+            addMessage(message) {
+                const messages = this.messages;
+                messages.push({
+                    ...message,
+                    id: Date.now(),
+                    createdAt: new Date().toISOString(),
+                    status: 'unread'
+                });
+                this.saveMessages(messages);
+                return message;
+            }
+
+            addRecording(recording) {
+                const recordings = this.recordings;
+                recordings.push({
+                    ...recording,
+                    id: Date.now(),
+                    createdAt: new Date().toISOString()
+                });
+                this.saveRecordings(recordings);
+                return recording;
+            }
+
+            getUserAppointments(userEmail) {
+                return this.appointments.filter(apt => apt.patientEmail === userEmail);
+            }
+        }
+
+        // Appointment Manager
+        class AppointmentManager {
+            constructor(db, authManager) {
+                this.db = db;
+                this.authManager = authManager;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadAppointments();
+            }
+
+            bindEvents() {
+                document.getElementById('bookAppointment').addEventListener('click', () => {
+                    this.bookAppointment();
+                });
+            }
+
+            bookAppointment() {
+                if (!this.authManager.requireAuth()) return;
+
+                const name = document.getElementById('patientName').value.trim();
+                const email = document.getElementById('patientEmail').value.trim();
+                const phone = document.getElementById('patientPhone').value.trim();
+                const doctor = document.getElementById('doctorSelect').value;
+                const time = document.getElementById('appointmentTime').value;
+                const symptoms = document.getElementById('symptoms').value.trim();
+
+                if (!name || !email || !phone || !doctor || !time || !symptoms) {
+                    this.showNotification('Please fill in all fields', 'error');
+                    return;
+                }
+
+                const appointment = {
+                    patientName: name,
+                    patientEmail: email,
+                    patientPhone: phone,
+                    doctor: doctor,
+                    time: new Date(time).toISOString(),
+                    symptoms: symptoms,
+                    patientId: this.authManager.currentUser.id
+                };
+
+                try {
+                    this.db.addAppointment(appointment);
+                    this.clearForm();
+                    this.showNotification('Appointment booked successfully!', 'success');
+                    this.loadAppointments();
+                } catch (error) {
+                    this.showNotification('Failed to book appointment: ' + error.message, 'error');
+                }
+            }
+
+            loadAppointments() {
+                const container = document.getElementById('appointmentsContainer');
+                
+                if (!this.authManager.isAuthenticated()) {
+                    container.innerHTML = '<p>Please login to view your appointments</p>';
+                    return;
+                }
+
+                const userAppointments = this.db.getUserAppointments(this.authManager.currentUser.email);
+                
+                if (userAppointments.length === 0) {
+                    container.innerHTML = '<p>No appointments booked yet. Book your first appointment above!</p>';
+                    return;
+                }
+
+                container.innerHTML = userAppointments.map(apt => `
+                    <div class="appointment-item">
+                        <div class="appointment-info">
+                            <h4>Appointment with ${this.getDoctorName(apt.doctor)}</h4>
+                            <p><strong>Date & Time:</strong> ${new Date(apt.time).toLocaleString()}</p>
+                            <p><strong>Symptoms:</strong> ${apt.symptoms}</p>
+                            <p><strong>Contact:</strong> ${apt.patientPhone}</p>
+                        </div>
+                        <div>
+                            <span class="appointment-status status-${apt.status}">${apt.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            getDoctorName(doctorId) {
+                const doctors = {
+                    'dr-smith': 'Dr. Sarah Smith (Cardiology)',
+                    'dr-johnson': 'Dr. Mike Johnson (Pediatrics)',
+                    'dr-williams': 'Dr. Lisa Williams (Dermatology)',
+                    'dr-brown': 'Dr. James Brown (General Medicine)'
+                };
+                return doctors[doctorId] || 'Unknown Doctor';
+            }
+
+            clearForm() {
+                document.getElementById('patientName').value = '';
+                document.getElementById('patientEmail').value = '';
+                document.getElementById('patientPhone').value = '';
+                document.getElementById('doctorSelect').value = '';
+                document.getElementById('appointmentTime').value = '';
+                document.getElementById('symptoms').value = '';
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            }
+        }
+
+        // Contact Manager
+        class ContactManager {
+            constructor(db, authManager) {
+                this.db = db;
+                this.authManager = authManager;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                document.getElementById('sendMessage').addEventListener('click', () => {
+                    this.sendMessage();
+                });
+            }
+
+            sendMessage() {
+                const name = document.getElementById('contactName').value.trim();
+                const email = document.getElementById('contactEmail').value.trim();
+                const phone = document.getElementById('contactPhone').value.trim();
+                const department = document.getElementById('contactDepartment').value;
+                const message = document.getElementById('contactMessage').value.trim();
+
+                if (!name || !email || !phone || !department || !message) {
+                    this.showNotification('Please fill in all fields', 'error');
+                    return;
+                }
+
+                const messageObj = {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    department: department,
+                    message: message,
+                    userId: this.authManager.currentUser?.id || null
+                };
+
+                try {
+                    this.db.addMessage(messageObj);
+                    this.clearForm();
+                    this.showNotification('Message sent successfully! We will respond within 24 hours.', 'success');
+                } catch (error) {
+                    this.showNotification('Failed to send message: ' + error.message, 'error');
+                }
+            }
+
+            clearForm() {
+                document.getElementById('contactName').value = '';
+                document.getElementById('contactEmail').value = '';
+                document.getElementById('contactPhone').value = '';
+                document.getElementById('contactDepartment').value = '';
+                document.getElementById('contactMessage').value = '';
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            }
+        }
+
+        // Video Consultation Manager with Enhanced Recording
+        class VideoConsultationManager {
+            constructor(authManager, db) {
+                this.authManager = authManager;
+                this.db = db;
+                this.patientStream = null;
+                this.doctorStream = null;
+                this.isCallActive = false;
+                this.isRecording = false;
+                this.mediaRecorder = null;
+                this.recordedChunks = [];
+                this.recordingStartTime = null;
+                this.recordingTimer = null;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadRecordings();
+            }
+
+            bindEvents() {
+                document.getElementById('startConsultation').addEventListener('click', () => {
+                    this.startConsultation();
+                });
+
+                document.getElementById('endCall').addEventListener('click', () => {
+                    this.endCall();
+                });
+
+                // Patient controls
+                document.getElementById('patientMuteAudio').addEventListener('click', () => {
+                    this.togglePatientAudio();
+                });
+
+                document.getElementById('patientMuteVideo').addEventListener('click', () => {
+                    this.togglePatientVideo();
+                });
+
+                // Doctor controls
+                document.getElementById('doctorMuteAudio').addEventListener('click', () => {
+                    this.toggleDoctorAudio();
+                });
+
+                document.getElementById('doctorMuteVideo').addEventListener('click', () => {
+                    this.toggleDoctorVideo();
+                });
+
+                // Recording controls
+                document.getElementById('startRecording').addEventListener('click', () => {
+                    this.startRecording();
+                });
+
+                document.getElementById('stopRecording').addEventListener('click', () => {
+                    this.stopRecording();
+                });
+
+                document.getElementById('playRecording').addEventListener('click', () => {
+                    this.playRecording();
+                });
+            }
+
+            async startConsultation() {
+                if (!this.authManager.requireAuth()) return;
+
+                this.showNotification('Starting video consultation...', 'success');
+                showSection('video-consultation');
+
+                setTimeout(async () => {
+                    try {
+                        await this.initializeCameras();
+                        this.isCallActive = true;
+                    } catch (error) {
+                        this.showNotification('Failed to start consultation: ' + error.message, 'error');
+                    }
+                }, 500);
+            }
+
+            async initializeCameras() {
+                this.updateCallStatus('Initializing cameras...');
+                document.getElementById('callSpinner').style.display = 'block';
+
+                try {
+                    // Get patient camera
+                    this.patientStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+                        audio: true
+                    }).catch(err => navigator.mediaDevices.getUserMedia({ video: true, audio: true }));
+
+                    // Get doctor camera
+                    this.doctorStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+                        audio: true
+                    }).catch(err => navigator.mediaDevices.getUserMedia({ video: true, audio: true }));
+
+                    // Display streams
+                    document.getElementById('patientVideo').srcObject = this.patientStream;
+                    document.getElementById('doctorVideo').srcObject = this.doctorStream;
+
+                    // Update labels
+                    const currentUser = this.authManager.currentUser;
+                    if (currentUser.type === 'doctor') {
+                        document.getElementById('patientLabel').textContent = 'Patient View';
+                        document.getElementById('doctorLabel').textContent = 'Your Camera';
+                    } else {
+                        document.getElementById('patientLabel').textContent = 'Your Camera';
+                        document.getElementById('doctorLabel').textContent = 'Doctor View';
+                    }
+
+                    this.updateCallStatus('Cameras active - Call in progress');
+                    document.getElementById('callSpinner').style.display = 'none';
+                    this.showNotification('Video consultation started successfully!', 'success');
+
+                } catch (error) {
+                    this.updateCallStatus('Failed to initialize cameras');
+                    document.getElementById('callSpinner').style.display = 'none';
+                    throw error;
+                }
+            }
+
+            startRecording() {
+                if (!this.patientStream) {
+                    this.showNotification('No active call to record', 'error');
+                    return;
+                }
+
+                try {
+                    this.recordedChunks = [];
+                    this.mediaRecorder = new MediaRecorder(this.patientStream, { 
+                        mimeType: 'audio/webm; codecs=opus' 
+                    });
+
+                    this.mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            this.recordedChunks.push(event.data);
+                        }
+                    };
+
+                    this.mediaRecorder.onstop = () => {
+                        const blob = new Blob(this.recordedChunks, { type: 'audio/webm' });
+                        const url = URL.createObjectURL(blob);
+                        
+                        // Save recording to database
+                        const recording = {
+                            url: url,
+                            duration: Math.floor((Date.now() - this.recordingStartTime) / 1000),
+                            timestamp: new Date().toISOString(),
+                            patientId: this.authManager.currentUser.id,
+                            patientName: this.authManager.currentUser.name
+                        };
+
+                        this.db.addRecording(recording);
+                        document.getElementById('recordingPlayback').src = url;
+                        this.loadRecordings();
+                    };
+
+                    this.mediaRecorder.start(1000);
+                    this.isRecording = true;
+                    this.recordingStartTime = Date.now();
+
+                    // Start timer
+                    this.recordingTimer = setInterval(() => {
+                        const elapsed = Math.floor((Date.now() - this.recordingStartTime) / 1000);
+                        const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                        const seconds = (elapsed % 60).toString().padStart(2, '0');
+                        document.getElementById('recordingTimer').textContent = `${minutes}:${seconds}`;
+                    }, 1000);
+
+                    document.getElementById('startRecording').disabled = true;
+                    document.getElementById('stopRecording').disabled = false;
+                    document.getElementById('playRecording').disabled = true;
+                    document.getElementById('recordingIndicator').classList.remove('hidden');
+
+                    this.showNotification('Recording started', 'success');
+                } catch (error) {
+                    this.showNotification('Recording not supported: ' + error.message, 'error');
+                }
+            }
+
+            stopRecording() {
+                if (this.mediaRecorder && this.isRecording) {
+                    this.mediaRecorder.stop();
+                    this.isRecording = false;
+
+                    clearInterval(this.recordingTimer);
+
+                    document.getElementById('startRecording').disabled = false;
+                    document.getElementById('stopRecording').disabled = true;
+                    document.getElementById('playRecording').disabled = false;
+                    document.getElementById('recordingIndicator').classList.add('hidden');
+                    document.getElementById('recordingPlayback').classList.remove('hidden');
+
+                    this.showNotification('Recording saved successfully', 'success');
+                }
+            }
+
+            playRecording() {
+                const playback = document.getElementById('recordingPlayback');
+                playback.play().catch(e => {
+                    this.showNotification('Error playing recording: ' + e.message, 'error');
+                });
+            }
+
+            loadRecordings() {
+                const container = document.getElementById('recordingsContainer');
+                const recordings = this.db.recordings;
+                
+                if (recordings.length === 0) {
+                    container.innerHTML = '<p>No recordings available. Start a recording during your consultation.</p>';
+                    return;
+                }
+
+                container.innerHTML = recordings.map(rec => `
+                    <div class="recording-item">
+                        <div class="recording-info">
+                            <div>
+                                <h4>Consultation Recording</h4>
+                                <p><strong>Date:</strong> ${new Date(rec.timestamp).toLocaleString()}</p>
+                                <p><strong>Duration:</strong> ${rec.duration} seconds</p>
+                                <p><strong>Patient:</strong> ${rec.patientName}</p>
+                            </div>
+                        </div>
+                        <audio controls class="recording-player">
+                            <source src="${rec.url}" type="audio/webm">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                `).join('');
+            }
+
+            togglePatientAudio() {
+                if (!this.patientStream) return;
+                const audioTracks = this.patientStream.getAudioTracks();
+                const isMuted = !audioTracks[0].enabled;
+                audioTracks.forEach(track => track.enabled = !isMuted);
+                document.getElementById('patientMuteAudio').textContent = isMuted ? 'Unmute Audio' : 'Mute Audio';
+            }
+
+            togglePatientVideo() {
+                if (!this.patientStream) return;
+                const videoTracks = this.patientStream.getVideoTracks();
+                const isVideoOff = !videoTracks[0].enabled;
+                videoTracks.forEach(track => track.enabled = !isVideoOff);
+                document.getElementById('patientMuteVideo').textContent = isVideoOff ? 'Turn On Video' : 'Turn Off Video';
+            }
+
+            toggleDoctorAudio() {
+                if (!this.doctorStream) return;
+                const audioTracks = this.doctorStream.getAudioTracks();
+                const isMuted = !audioTracks[0].enabled;
+                audioTracks.forEach(track => track.enabled = !isMuted);
+                document.getElementById('doctorMuteAudio').textContent = isMuted ? 'Unmute Audio' : 'Mute Audio';
+            }
+
+            toggleDoctorVideo() {
+                if (!this.doctorStream) return;
+                const videoTracks = this.doctorStream.getVideoTracks();
+                const isVideoOff = !videoTracks[0].enabled;
+                videoTracks.forEach(track => track.enabled = !isVideoOff);
+                document.getElementById('doctorMuteVideo').textContent = isVideoOff ? 'Turn On Video' : 'Turn Off Video';
+            }
+
+            endCall() {
+                if (this.isRecording) {
+                    this.stopRecording();
+                }
+
+                this.cleanupStreams();
+                this.isCallActive = false;
+                this.showNotification('Call ended', 'success');
+                showSection('home');
+            }
+
+            cleanupStreams() {
+                if (this.patientStream) {
+                    this.patientStream.getTracks().forEach(track => track.stop());
+                    this.patientStream = null;
+                }
+                if (this.doctorStream) {
+                    this.doctorStream.getTracks().forEach(track => track.stop());
+                    this.doctorStream = null;
+                }
+            }
+
+            updateCallStatus(status) {
+                document.getElementById('callStatus').textContent = status;
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            }
+        }
+
+        // Navigation Manager
+        class NavigationManager {
+            constructor() {
+                this.currentSection = 'home';
+                this.init();
+            }
+
+            init() {
+                this.bindNavigationEvents();
+                this.showSection('home');
+            }
+
+            bindNavigationEvents() {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const section = link.getAttribute('data-section');
+                        this.showSection(section);
+                        this.toggleMobileMenu(false);
+                    });
+                });
+
+                document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+                    this.toggleMobileMenu();
+                });
+            }
+
+            showSection(sectionId) {
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    this.currentSection = sectionId;
+                    window.location.hash = sectionId;
+                }
+
+                this.toggleMobileMenu(false);
+                window.scrollTo(0, 0);
+            }
+
+            toggleMobileMenu(show) {
+                const navMenu = document.getElementById('navMenu');
+                if (show !== undefined) {
+                    navMenu.classList.toggle('active', show);
+                } else {
+                    navMenu.classList.toggle('active');
+                }
+            }
+        }
+
+        // Authentication Manager
+        class AuthManager {
+            constructor(db, navigation) {
+                this.db = db;
+                this.navigation = navigation;
+                this.currentUser = null;
+                this.appointmentManager = null;
+                this.contactManager = null;
+                this.videoManager = null;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.checkExistingAuth();
+                // Initialize other managers after auth
+                this.appointmentManager = new AppointmentManager(this.db, this);
+                this.contactManager = new ContactManager(this.db, this);
+                this.videoManager = new VideoConsultationManager(this, this.db);
+            }
+
+            bindEvents() {
+                document.getElementById('loginBtn').addEventListener('click', () => {
+                    this.showAuthModal();
+                });
+
+                document.getElementById('signupBtn').addEventListener('click', () => {
+                    this.showAuthModal('signup');
+                });
+
+                document.getElementById('submitLogin').addEventListener('click', () => {
+                    this.handleLogin();
+                });
+
+                document.getElementById('submitSignup').addEventListener('click', () => {
+                    this.handleSignup();
+                });
+
+                document.getElementById('closeAuthModal').addEventListener('click', () => {
+                    this.closeAuthModal();
+                });
+
+                document.querySelectorAll('.auth-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        this.switchAuthTab(e.target.dataset.tab);
+                    });
+                });
+
+                document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleLogin();
+                });
+
+                document.getElementById('signupPassword').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleSignup();
+                });
+
+                document.getElementById('authModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'authModal') {
+                        this.closeAuthModal();
+                    }
+                });
+            }
+
+            showAuthModal(defaultTab = 'login') {
+                document.getElementById('authModal').style.display = 'block';
+                this.switchAuthTab(defaultTab);
+                
+                setTimeout(() => {
+                    const firstInput = document.querySelector('.auth-form:not(.hidden) input');
+                    if (firstInput) firstInput.focus();
+                }, 100);
+            }
+
+            closeAuthModal() {
+                document.getElementById('authModal').style.display = 'none';
+                this.clearAuthForms();
+            }
+
+            switchAuthTab(tab) {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+                
+                document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+                document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
+            }
+
+            async handleLogin() {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                if (!email || !password) {
+                    this.showNotification('Please fill in all fields', 'error');
+                    return;
+                }
+
+                try {
+                    const user = this.db.validateUser(email, password);
+                    await this.login(user);
+                } catch (error) {
+                    this.showNotification(error.message, 'error');
+                }
+            }
+
+            async handleSignup() {
+                const name = document.getElementById('signupName').value.trim();
+                const email = document.getElementById('signupEmail').value.trim();
+                const password = document.getElementById('signupPassword').value;
+                const userType = document.getElementById('userType').value;
+
+                if (!name || !email || !password) {
+                    this.showNotification('Please fill in all fields', 'error');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    this.showNotification('Password must be at least 6 characters', 'error');
+                    return;
+                }
+
+                try {
+                    const user = { name, email, password, type: userType };
+                    const newUser = this.db.addUser(user);
+                    await this.login(newUser);
+                } catch (error) {
+                    this.showNotification(error.message, 'error');
+                }
+            }
+
+            async login(user) {
+                this.currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                this.closeAuthModal();
+                this.updateUI();
+                this.showNotification(`Welcome back, ${user.name}!`, 'success');
+                
+                // Refresh appointments when user logs in
+                if (this.appointmentManager) {
+                    this.appointmentManager.loadAppointments();
+                }
+            }
+
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('currentUser');
+                this.updateUI();
+                this.navigation.showSection('home');
+                this.showNotification('Logged out successfully', 'success');
+            }
+
+            updateUI() {
+                const authButtons = document.getElementById('authButtons');
+                const doctorPortalLink = document.querySelector('.doctor-portal-link');
+                
+                if (this.currentUser) {
+                    authButtons.innerHTML = `
+                        <span class="welcome-user">Welcome, ${this.currentUser.name}</span>
+                        <button class="btn-login" id="logoutBtn">Logout</button>
+                    `;
+                    
+                    if (this.currentUser.type === 'doctor') {
+                        doctorPortalLink.classList.remove('hidden');
+                    } else {
+                        doctorPortalLink.classList.add('hidden');
+                    }
+                    
+                    document.getElementById('logoutBtn').addEventListener('click', () => {
+                        this.logout();
+                    });
+
+                } else {
+                    authButtons.innerHTML = `
+                        <button class="btn-login" id="loginBtn">Login</button>
+                        <button class="btn-signup" id="signupBtn">Sign Up</button>
+                    `;
+                    
+                    doctorPortalLink.classList.add('hidden');
+                    
+                    document.getElementById('loginBtn').addEventListener('click', () => {
+                        this.showAuthModal();
+                    });
+                    document.getElementById('signupBtn').addEventListener('click', () => {
+                        this.showAuthModal('signup');
+                    });
+                }
+
+                this.navigation.bindNavigationEvents();
+            }
+
+            checkExistingAuth() {
+                try {
+                    const savedUser = localStorage.getItem('currentUser');
+                    if (savedUser) {
+                        const user = JSON.parse(savedUser);
+                        this.currentUser = user;
+                        this.updateUI();
+                        this.showNotification(`Welcome back, ${user.name}!`, 'success');
+                    }
+                } catch (error) {
+                    localStorage.removeItem('currentUser');
+                }
+            }
+
+            clearAuthForms() {
+                document.getElementById('loginEmail').value = 'patient@demo.com';
+                document.getElementById('loginPassword').value = 'demo123';
+                document.getElementById('signupName').value = '';
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            }
+
+            isAuthenticated() {
+                return this.currentUser !== null;
+            }
+
+            requireAuth() {
+                if (!this.isAuthenticated()) {
+                    this.showNotification('Please login to access this feature', 'error');
+                    this.showAuthModal();
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            const db = new Database();
+            const navigation = new NavigationManager();
+            window.authManager = new AuthManager(db, navigation);
+            window.navigation = navigation;
+
+            setTimeout(() => {
+                if (!window.authManager.isAuthenticated()) {
+                    window.authManager.showNotification('💡 Use demo accounts to test all features!', 'warning');
+                }
+            }, 3000);
+        });
+
+        // Global functions
+        window.showSection = function(sectionId) {
+            if (window.navigation) {
+                window.navigation.showSection(sectionId);
+            }
+        };
+
+        window.showNotification = function(message, type) {
+            if (window.authManager) {
+                window.authManager.showNotification(message, type);
+            }
+        };
+    </script>
+</body>
+</html>
+
+</body>
+</html>

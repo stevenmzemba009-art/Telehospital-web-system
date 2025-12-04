@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Telemedicine - Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="logo">Telemedicine</h1>
+            <nav class="top-nav">
+                <button id="locationBtn" class="btn">Hospital Location</button>
+                <button id="contactBtn" class="btn">Contact Us</button>
+                <button id="signupBtn" class="btn">Sign Up</button>
+                <div class="login-group">
+                    <button id="loginBtn" class="btn primary">Login</button>
+                    <div class="role-select" id="roleSelect">
+                        <label for="role">Select role</label>
+                        <select id="role">
+                            <option>Admin</option>
+                            <option>Cashier</option>
+                            <option>Healthcare Provider</option>
+                            <option>Pharmacist</option>
+                        </select>
+                        <button id="doLogin" class="btn small">Go</button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container">
+            <div class="hero-image">
+                <img src="https://example.com/dialysis-patient.jpg" alt="Patient on dialysis machine" />
+            </div>
+            <div class="hero-text">
+                <h2>Telemedicine for Diabetes & Hypertension</h2>
+                <p>Remote consultations, monitoring and support — focused on diabetic and hypertensive care.</p>
+                <p class="muted">Location: Malawi — Southern Region, Phalombe District</p>
+            </div>
+        </section>
+
+        <section id="blog" class="container blog">
+            <h2>Patient Stories & Advice</h2>
+            <div class="cards">
+                <article class="card">
+                    <img src="images/diabetes1.svg" alt="Diabetes patient 1">
+                    <h3>Diabetes: Signs</h3>
+                    <p>Increased thirst, frequent urination, unexplained weight loss are common signs.</p>
+                    <p class="muted">Prevention: Healthy diet, regular exercise, blood sugar monitoring.</p>
+                </article>
+
+                <article class="card">
+                    <img src="images/diabetes2.svg" alt="Diabetes patient 2">
+                    <h3>Diabetes: Symptoms</h3>
+                    <p>Fatigue, blurred vision, slow healing wounds can indicate high blood sugar.</p>
+                    <p class="muted">Prevention: Regular checkups, medication adherence, lifestyle changes.</p>
+                </article>
+
+                <article class="card">
+                    <img src="images/hypertension1.svg" alt="Hypertension patient 1">
+                    <h3>Hypertension: Signs</h3>
+                    <p>Often asymptomatic, but severe cases cause headaches and nosebleeds.</p>
+                    <p class="muted">Prevention: Reduce salt, maintain healthy weight, exercise.</p>
+                </article>
+
+                <article class="card">
+                    <img src="images/hypertension2.svg" alt="Hypertension patient 2">
+                    <h3>Hypertension: Symptoms & Prevention</h3>
+                    <p>Dizziness, shortness of breath in advanced stages.</p>
+                    <p class="muted">Prevention: Regular BP checks, medication, lifestyle modifications.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Cashier registration moved to signup flow; homepage no longer collects patient data -->
+
+
+        <section id="contact" class="container contact">
+            <h2>Contact Us</h2>
+            <p>Contact: <strong>Steven Mzemba</strong> — 0999564297 — stevenmzemba@gmail.com</p>
+            <form id="contactForm" class="contact-form">
+                <label>Name <input type="text" name="name" required></label>
+                <label>Phone <input type="text" name="phone" required></label>
+                <label>Email <input type="email" name="email" required></label>
+                <label>Message <textarea name="message" required></textarea></label>
+                <button class="btn primary" type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div>© <strong>Steven Mzemba</strong> 2025</div>
+            <div class="tagline"><a href="dashboard.html" id="servicesLink">Telemedicine for diabetes and
+                    hypertension</a></div>
+        </div>
+    </footer>
+    <script>
+        // Event listeners for navigation buttons
+        document.getElementById('locationBtn').addEventListener('click', () => {
+            alert('Telemedicine location:\nMalawi — Southern Region\nPhalombe District');
+        });
+
+        document.getElementById('contactBtn').addEventListener('click', () => {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('signupBtn').addEventListener('click', () => openSignup());
+
+        // Login functionality
+        document.getElementById('doLogin').addEventListener('click', async () => {
+            const roleLabel = document.getElementById('role').value;
+            const role = roleLabel.toLowerCase();
+            const username = role === 'healthcare provider' ? 'health' : (role === 'pharmacist' ? 'pharm' : (role === 'cashier' ? 'cashier' : 'admin'));
+            try {
+                const resp = await fetch('/backend/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password: 'pass' }) });
+                const data = await resp.json();
+                if (data.token) {
+                    localStorage.setItem('tele_token', data.token);
+                    localStorage.setItem('tele_role', data.role);
+                    localStorage.setItem('tele_user', data.username || username);
+                    // redirect to dashboard where user can perform role tasks
+                    window.location.href = 'dashboard.html';
+                } else alert('Login failed');
+            } catch (e) { alert('Login server not available locally. Start backend and try again.'); }
+        });
+
+        // Signup modal functionality
+        function openSignup() {
+            const html = `
+                <div style="position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999">
+                    <div style="background:#111;padding:18px;border-radius:8px;max-width:420px;color:var(--accent)">
+                        <h3>Sign Up</h3>
+                        <label>Username <input id="su_u" /></label>
+                        <label>Password <input id="su_p" type="password" /></label>
+                        <label>Role <select id="su_role">
+                                <option value="cashier">Cashier</option>
+                                <option value="healthcare">Healthcare Provider</option>
+                                <option value="pharmacist">Pharmacist</option>
+                            </select></label>
+                        <div style="margin-top:10px;display:flex;gap:8px">
+                            <button id="doSign" class="btn primary">Create Account</button>
+                            <button id="closeSign" class="btn">Cancel</button>
+                        </div>
+                    </div>
+                </div>`;
+            const wrap = document.createElement('div');
+            wrap.innerHTML = html;
+            document.body.appendChild(wrap);
+
+            // Event listeners for signup modal
+            document.getElementById('doSign').addEventListener('click', async () => {
+                const username = document.getElementById('su_u').value;
+                const password = document.getElementById('su_p').value;
+                const role = document.getElementById('su_role').value;
+                if (!username || !password) { alert('Enter username and password'); return; }
+                try {
+                    const res = await fetch('/backend/api/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password, role }) });
+                    const data = await res.json();
+                    if (data.ok) {
+                        alert('Account created successfully');
+                        wrap.remove();
+                    } else alert(JSON.stringify(data));
+                } catch (e) { alert('Server not reachable'); }
+            });
+
+            document.getElementById('closeSign').addEventListener('click', () => wrap.remove());
+        }
+
+        // Contact form submission
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(document.getElementById('contactForm')).entries());
+            try {
+                const res = await fetch('/backend/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const d = await res.json();
+                if (d.ok) alert('Message sent — admin will reply'); else alert(JSON.stringify(d));
+            } catch (e) { alert('Server not reachable'); }
+        });
+    </script>
+</body>
+
+</html>

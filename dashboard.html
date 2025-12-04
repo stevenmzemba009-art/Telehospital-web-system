@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Telemedicine Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .dash-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .dash-card {
+            background: var(--surface);
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--accent);
+            min-width: 220px
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="logo">Dashboard</h1>
+            <nav>
+                <button id="logout" class="btn">Logout</button>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <section>
+            <h2>Login (demo)</h2>
+            <div style="max-width:420px">
+                <label>Username <input id="u" /></label>
+                <label>Password <input id="p" type="password" /></label>
+                <button id="btnLogin" class="btn primary">Login</button>
+            </div>
+            <div style="margin-top:10px;color:var(--muted)">Logged in as: <span id="currentUser">(none)</span> Role:
+                <span id="currentRole">(none)</span>
+            </div>
+        </section>
+
+        <section style="margin-top:18px">
+            <h2>Actions</h2>
+            <div class="dash-grid">
+                <div class="dash-card">
+                    <h3>Cashier Summary</h3>
+                    <button id="cashToday" class="btn small">Today</button>
+                    <button id="cashWeek" class="btn small">Week</button>
+                    <button id="cashMonth" class="btn small">Month</button>
+                    <div id="cashierOut"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>Admin Summary</h3>
+                    <button id="adminToday" class="btn small">Today</button>
+                    <div id="adminOut"></div>
+                    <h4 style="margin-top:8px">Contact Messages</h4>
+                    <button id="loadMsgs" class="btn small">Load Messages</button>
+                    <div id="msgsOut" style="margin-top:8px;white-space:pre-wrap;color:var(--muted)"></div>
+                    <h4 style="margin-top:8px">Patient Absence Analysis</h4>
+                    <button id="analyzeAbsence" class="btn small">Analyze & Send SMS</button>
+                    <div id="absenceOut"></div>
+                    <h4 style="margin-top:8px">Medication Refill Reminders</h4>
+                    <button id="sendRefillReminders" class="btn small">Send Reminders</button>
+                    <div id="refillOut"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>Healthcare</h3>
+                    <button id="listConsult" class="btn small">List Consultations</button>
+                    <div id="healthOut"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>Pharmacy</h3>
+                    <button id="listPharm" class="btn small">List Tasks</button>
+                    <div id="pharmOut"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>Current System Users</h3>
+                    <button id="viewUsers" class="btn small">View Users</button>
+                    <div id="usersOut"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>New Patient Registration</h3>
+                    <form id="patientForm">
+                        <label>Name <input id="patName" required></label>
+                        <label>Phone <input id="patPhone" required></label>
+                        <label>Email <input id="patEmail"></label>
+                        <label>Address <input id="patAddress"></label>
+                        <label>Medical History <textarea id="patHistory"></textarea></label>
+                        <button type="submit" class="btn small">Register Patient</button>
+                    </form>
+                    <div id="patientRegOut"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>Patient Visit Scheduling</h3>
+                    <label for="scheduleDate">Schedule Date</label>
+                    <input type="date" id="scheduleDate">
+                    <label for="scheduleRole">Role</label>
+                    <select id="scheduleRole">
+                        <option value="cashier">Cashier</option>
+                        <option value="healthcare">Healthcare Provider</option>
+                        <option value="pharmacist">Pharmacist</option>
+                    </select>
+                    <button id="scheduleVisit" class="btn small">Schedule Visit</button>
+                    <div id="scheduleOut"></div>
+                    <h4>Calendar</h4>
+                    <div id="calendar"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>Admin Chat</h3>
+                    <div id="chatMessages" style="height:200px;overflow-y:auto;border:1px solid #ccc;padding:5px;margin-bottom:10px;"></div>
+                    <label for="chatInput">Message</label>
+                    <input id="chatInput" placeholder="Type message..." style="width:70%">
+                    <button id="sendChat" class="btn small">Send</button>
+                    <div id="chatOut"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>Patient Form Editing</h3>
+                    <label for="editPatientSelect">Select Patient</label>
+                    <select id="editPatientSelect"></select>
+                    <button id="loadPatientForm" class="btn small">Load Form</button>
+                    <form id="editPatientForm" style="display:none;">
+                        <label>Name <input id="editPatName"></label>
+                        <label>Phone <input id="editPatPhone"></label>
+                        <label>Email <input id="editPatEmail"></label>
+                        <label>Address <input id="editPatAddress"></label>
+                        <label>Medical History <textarea id="editPatHistory"></textarea></label>
+                        <button type="submit" class="btn small">Update Patient</button>
+                    </form>
+                    <div id="editPatientOut"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h3>Dialysis Patient Picture</h3>
+                    <label for="dialysisImage">Select Image</label>
+                    <input type="file" id="dialysisImage" accept="image/*">
+                    <button id="uploadImage" class="btn small">Upload Image</button>
+                    <div id="imageOut"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById('btnLogin').addEventListener('click', async () => {
+            const username = document.getElementById('u').value;
+            const password = document.getElementById('p').value;
+            try {
+                const res = await fetch('/backend/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
+                const d = await res.json();
+                if (d.token) { localStorage.setItem('tele_token', d.token); alert('Logged in as ' + d.role); }
+                else alert(JSON.stringify(d));
+            } catch (e) { alert('Start backend at backend/server.js'); }
+        });
+
+        // show current user/role if set
+        const curUser = localStorage.getItem('tele_user');
+        const curRole = localStorage.getItem('tele_role');
+        if (curUser) document.getElementById('currentUser').innerText = curUser;
+        if (curRole) document.getElementById('currentRole').innerText = curRole;
+
+        document.getElementById('cashToday').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/cashier/summary?period=today', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('cashierOut').innerText = JSON.stringify(d);
+        });
+
+        document.getElementById('adminToday').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/admin/summary?period=today', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('adminOut').innerText = JSON.stringify(d);
+        });
+
+        document.getElementById('listConsult').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/consultations', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('healthOut').innerText = JSON.stringify(d, null, 2);
+        });
+
+        document.getElementById('listPharm').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/pharmacy/tasks', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('pharmOut').innerText = JSON.stringify(d, null, 2);
+        });
+
+        // load admin messages
+        document.getElementById('loadMsgs').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/admin/messages', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json();
+            const out = document.getElementById('msgsOut'); out.innerHTML = '';
+            d.forEach(m => {
+                const el = document.createElement('div'); el.style.marginBottom = '12px';
+                el.innerHTML = `<strong>#${m.id} ${m.name}</strong> (${m.phone} / ${m.email})<div style=\"margin:6px 0;color:#fff\">${m.message}</div><div style=\"color:var(--muted)\">Reply: ${m.reply || '(none)'} by ${m.replied_by || '(n/a)'}</div><div style=\"margin-top:6px\"><input placeholder=\"Reply text\" id=\"r_${m.id}\" style=\"width:70%\"/><button class=\"btn small\" onclick=replyMsg(${m.id})>Send Reply</button></div>`;
+                out.appendChild(el);
+            });
+        });
+
+        // reply helper
+        window.replyMsg = async function (id) {
+            const token = localStorage.getItem('tele_token');
+            const text = document.getElementById('r_' + id).value;
+            if (!text) return alert('Enter reply');
+            const res = await fetch('/backend/api/admin/messages/' + id + '/reply', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-auth-token': token }, body: JSON.stringify({ reply: text }) }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            alert('Reply stored');
+            document.getElementById('loadMsgs').click();
+        }
+
+        // Cashier buttons
+        document.getElementById('cashWeek').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/cashier/summary?period=week', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('cashierOut').innerText = JSON.stringify(d);
+        });
+
+        document.getElementById('cashMonth').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/cashier/summary?period=month', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('cashierOut').innerText = JSON.stringify(d);
+        });
+
+        // Patient registration
+        document.getElementById('patientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('tele_token');
+            const data = {
+                name: document.getElementById('patName').value,
+                sex: 'Unknown', // Add sex field if needed
+                age: 0, // Add age field if needed
+                village: document.getElementById('patAddress').value,
+                contact: document.getElementById('patPhone').value
+            };
+            const res = await fetch('/backend/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-auth-token': token }, body: JSON.stringify(data) }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('patientRegOut').innerText = JSON.stringify(d);
+        });
+
+        // View users
+        document.getElementById('viewUsers').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/users', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('usersOut').innerText = JSON.stringify(d, null, 2);
+        });
+
+        // Patient visit scheduling
+        document.getElementById('scheduleVisit').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const patientId = 1; // Need to select patient
+            const dates = [document.getElementById('scheduleDate').value]; // Need multiple dates
+            const res = await fetch(`/backend/api/patients/${patientId}/schedule`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-auth-token': token }, body: JSON.stringify({ dates }) }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('scheduleOut').innerText = JSON.stringify(d);
+        });
+
+        // Admin absence analysis
+        document.getElementById('analyzeAbsence').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/admin/absences', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('absenceOut').innerText = JSON.stringify(d, null, 2);
+        });
+
+        // Send refill reminders
+        document.getElementById('sendRefillReminders').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            // Need patient selection logic
+            const patientId = 1; // Placeholder
+            const res = await fetch(`/backend/api/patients/${patientId}/remind`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-auth-token': token }, body: JSON.stringify({ message: 'Please refill your medication', via: 'chat' }) }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('refillOut').innerText = JSON.stringify(d);
+        });
+
+        // Admin chat send
+        document.getElementById('sendChat').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const message = document.getElementById('chatInput').value;
+            if (!message) return alert('Enter message');
+            // This would need a chat API - for now, simulate
+            document.getElementById('chatMessages').innerHTML += `<div>Admin: ${message}</div>`;
+            document.getElementById('chatInput').value = '';
+        });
+
+        // Patient form editing
+        document.getElementById('loadPatientForm').addEventListener('click', async () => {
+            const token = localStorage.getItem('tele_token');
+            const patientId = document.getElementById('editPatientSelect').value;
+            if (!patientId) return alert('Select patient');
+            const res = await fetch(`/backend/api/patients/${patientId}`, { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json();
+            document.getElementById('editPatName').value = d.name;
+            document.getElementById('editPatPhone').value = d.contact;
+            document.getElementById('editPatAddress').value = d.village;
+            document.getElementById('editPatientForm').style.display = 'block';
+        });
+
+        document.getElementById('editPatientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('tele_token');
+            const patientId = document.getElementById('editPatientSelect').value;
+            const data = {
+                name: document.getElementById('editPatName').value,
+                contact: document.getElementById('editPatPhone').value,
+                village: document.getElementById('editPatAddress').value
+            };
+            const res = await fetch(`/backend/api/patients/${patientId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'x-auth-token': token }, body: JSON.stringify(data) }).catch(() => null);
+            if (!res) return alert('Server not reachable');
+            const d = await res.json(); document.getElementById('editPatientOut').innerText = JSON.stringify(d);
+        });
+
+        // Image upload
+        document.getElementById('uploadImage').addEventListener('click', async () => {
+            const file = document.getElementById('dialysisImage').files[0];
+            if (!file) return alert('Select image');
+            // Simulate upload
+            document.getElementById('imageOut').innerText = 'Image uploaded successfully';
+        });
+
+        // Load patients for select
+        async function loadPatients() {
+            const token = localStorage.getItem('tele_token');
+            const res = await fetch('/backend/api/patients', { headers: { 'x-auth-token': token } }).catch(() => null);
+            if (res) {
+                const patients = await res.json();
+                const select = document.getElementById('editPatientSelect');
+                select.innerHTML = '<option value="">Select Patient</option>';
+                patients.forEach(p => {
+                    select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+                });
+            }
+        }
+        loadPatients();
+
+        document.getElementById('logout').addEventListener('click', () => { localStorage.removeItem('tele_token'); alert('Logged out'); });
+    </script>
+</body>
+
+</html>

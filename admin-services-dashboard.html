@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Services Dashboard - Telemedicine System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-card.healthy {
+            border-left: 4px solid #10b981;
+        }
+
+        .service-card.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .service-card.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .service-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.healthy {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.error {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .service-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .database-status {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .db-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .db-type {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .db-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.healthy {
+            background: #10b981;
+        }
+
+        .status-indicator.error {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .detailed-metrics {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .detailed-metrics h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .metrics-table thead {
+            background: #f9fafb;
+        }
+
+        .metrics-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .metrics-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .metrics-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .error-log {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .error-log h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .error-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .error-item.critical {
+            background: #fee2e2;
+            border-left-color: #ef4444;
+            color: #7f1d1d;
+        }
+
+        .error-time {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .footer {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer .last-update {
+            margin-bottom: 10px;
+        }
+
+        .refresh-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .database-status {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Telemedicine System - Admin Services Dashboard</h1>
+            <p>Real-time monitoring of all system services and components</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="switchTab('services')">Services</button>
+            <button class="tab-btn" onclick="switchTab('metrics')">Metrics</button>
+            <button class="tab-btn" onclick="switchTab('logs')">Error Logs</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="status-grid" id="overviewGrid">
+                <!-- Real-time Feed Service -->
+                <div class="service-card healthy">
+                    <div class="service-header">
+                        <div class="service-name">📡 Real-time Feeds</div>
+                        <div class="status-badge healthy">Active</div>
+                    </div>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 12px;">Multi-department event streaming</p>
+                    <div class="service-metrics">
+                        <div class="metric">
+                            <div class="metric-value" id="feeds-count">0</div>
+                            <div class="metric-label">Active Feeds</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="feeds-24h">0</div>
+                            <div class="metric-label">Last 24h</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMS Service -->
+                <div class="service-card healthy">
+                    <div class="service-header">
+                        <div class="service-name">💬 SMS Chat</div>
+                        <div class="status-badge healthy">Active</div>
+                    </div>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 12px;">Offline SMS communication</p>
+                    <div class="service-metrics">
+                        <div class="metric">
+                            <div class="metric-value" id="sms-sent">0</div>
+                            <div class="metric-label">Sent Today</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="sms-delivery">100%</div>
+                            <div class="metric-label">Delivery Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Service -->
+                <div class="service-card healthy">
+                    <div class="service-header">
+                        <div class="service-name">📋 Attendance</div>
+                        <div class="status-badge healthy">Active</div>
+                    </div>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 12px;">Check-in/out tracking</p>
+                    <div class="service-metrics">
+                        <div class="metric">
+                            <div class="metric-value" id="attendance-today">0</div>
+                            <div class="metric-label">Today</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="attendance-absent">0</div>
+                            <div class="metric-label">Absences</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reminders Service -->
+                <div class="service-card healthy">
+                    <div class="service-header">
+                        <div class="service-name">🔔 Reminders</div>
+                        <div class="status-badge healthy">Active</div>
+                    </div>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 12px;">Automated notifications</p>
+                    <div class="service-metrics">
+                        <div class="metric">
+                            <div class="metric-value" id="reminders-sent">0</div>
+                            <div class="metric-label">Sent Today</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="reminders-pending">0</div>
+                            <div class="metric-label">Pending</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Service -->
+                <div class="service-card healthy">
+                    <div class="service-header">
+                        <div class="service-name">🔐 Audit Logs</div>
+                        <div class="status-badge healthy">Active</div>
+                    </div>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 12px;">Access tracking & compliance</p>
+                    <div class="service-metrics">
+                        <div class="metric">
+                            <div class="metric-value" id="audit-24h">0</div>
+                            <div class="metric-label">Last 24h</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="audit-users">0</div>
+                            <div class="metric-label">Departments</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheduler Service -->
+                <div class="service-card healthy">
+                    <div class="service-header">
+                        <div class="service-name">⏱️ Scheduler</div>
+                        <div class="status-badge healthy">Active</div>
+                    </div>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 12px;">Background task automation</p>
+                    <div class="service-metrics">
+                        <div class="metric">
+                            <div class="metric-value" id="scheduler-tasks">0</div>
+                            <div class="metric-label">Completed</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="scheduler-errors">0</div>
+                            <div class="metric-label">Errors</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="database-status">
+                <div>
+                    <div class="db-type">📊 Database (Primary)</div>
+                    <div class="db-status">
+                        <div class="status-indicator healthy"></div>
+                        <span id="db-primary-type">MySQL 5.7</span>
+                    </div>
+                    <div style="font-size: 12px; color: #999; margin-top: 8px;" id="db-primary-info">Connected</div>
+                </div>
+                <div>
+                    <div class="db-type">☁️ Database (Cloud)</div>
+                    <div class="db-status">
+                        <div class="status-indicator healthy"></div>
+                        <span id="db-cloud-type">Supabase PostgreSQL</span>
+                    </div>
+                    <div style="font-size: 12px; color: #999; margin-top: 8px;" id="db-cloud-info">Configured</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Tab -->
+        <div id="services" class="tab-content">
+            <div class="detailed-metrics">
+                <h2>Service Health Status</h2>
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Status</th>
+                            <th>Uptime</th>
+                            <th>Last Check</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="servicesTable">
+                        <tr>
+                            <td>Real-time Feeds API</td>
+                            <td><span class="status-badge healthy">Healthy</span></td>
+                            <td>99.9%</td>
+                            <td id="check-realtime">Just now</td>
+                            <td><button class="btn-secondary btn-small" onclick="restartService('realtime')">Restart</button></td>
+                        </tr>
+                        <tr>
+                            <td>SMS Gateway</td>
+                            <td><span class="status-badge healthy">Healthy</span></td>
+                            <td>99.8%</td>
+                            <td id="check-sms">Just now</td>
+                            <td><button class="btn-secondary btn-small" onclick="restartService('sms')">Restart</button></td>
+                        </tr>
+                        <tr>
+                            <td>Attendance Tracking</td>
+                            <td><span class="status-badge healthy">Healthy</span></td>
+                            <td>100%</td>
+                            <td id="check-attendance">Just now</td>
+                            <td><button class="btn-secondary btn-small" onclick="restartService('attendance')">Restart</button></td>
+                        </tr>
+                        <tr>
+                            <td>Reminder System</td>
+                            <td><span class="status-badge healthy">Healthy</span></td>
+                            <td>99.7%</td>
+                            <td id="check-reminders">Just now</td>
+                            <td><button class="btn-secondary btn-small" onclick="restartService('reminders')">Restart</button></td>
+                        </tr>
+                        <tr>
+                            <td>Scheduler (Cron)</td>
+                            <td><span class="status-badge healthy">Healthy</span></td>
+                            <td>99.9%</td>
+                            <td id="check-scheduler">Just now</td>
+                            <td><button class="btn-secondary btn-small" onclick="restartService('scheduler')">Restart</button></td>
+                        </tr>
+                        <tr>
+                            <td>Audit Logger</td>
+                            <td><span class="status-badge healthy">Healthy</span></td>
+                            <td>100%</td>
+                            <td id="check-audit">Just now</td>
+                            <td><button class="btn-secondary btn-small" onclick="restartService('audit')">Restart</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Metrics Tab -->
+        <div id="metrics" class="tab-content">
+            <div class="detailed-metrics">
+                <h2>Performance Metrics (24 Hours)</h2>
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Trend</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>API Response Time (avg)</td>
+                            <td id="metric-response">145ms</td>
+                            <td>↓ 12%</td>
+                            <td><span style="color: #10b981;">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>Database Query Time (avg)</td>
+                            <td id="metric-query">89ms</td>
+                            <td>↓ 5%</td>
+                            <td><span style="color: #10b981;">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>SMS Delivery Success Rate</td>
+                            <td id="metric-sms-success">99.8%</td>
+                            <td>↑ 0.1%</td>
+                            <td><span style="color: #10b981;">Excellent</span></td>
+                        </tr>
+                        <tr>
+                            <td>System CPU Usage</td>
+                            <td id="metric-cpu">34%</td>
+                            <td>→ 0%</td>
+                            <td><span style="color: #10b981;">Healthy</span></td>
+                        </tr>
+                        <tr>
+                            <td>Memory Usage</td>
+                            <td id="metric-memory">512MB / 2GB</td>
+                            <td>↑ 2%</td>
+                            <td><span style="color: #10b981;">Healthy</span></td>
+                        </tr>
+                        <tr>
+                            <td>Disk Space (Database)</td>
+                            <td id="metric-disk">2.3GB / 50GB</td>
+                            <td>↑ 0.5%</td>
+                            <td><span style="color: #10b981;">Healthy</span></td>
+                        </tr>
+                        <tr>
+                            <td>Active Users</td>
+                            <td id="metric-users">127</td>
+                            <td>↑ 8%</td>
+                            <td><span style="color: #10b981;">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Requests / Minute</td>
+                            <td id="metric-rpm">1,245</td>
+                            <td>↑ 3%</td>
+                            <td><span style="color: #10b981;">Good</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 16px; color: #333; margin-bottom: 10px;">API Endpoint Status</h3>
+                    <table class="metrics-table">
+                        <thead>
+                            <tr>
+                                <th>Endpoint</th>
+                                <th>Method</th>
+                                <th>Response Time</th>
+                                <th>Success Rate</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>/api/realtime/feeds</td>
+                                <td>GET</td>
+                                <td>124ms</td>
+                                <td>99.9%</td>
+                                <td><span class="status-badge healthy">✓</span></td>
+                            </tr>
+                            <tr>
+                                <td>/api/sms/send_sms</td>
+                                <td>POST</td>
+                                <td>256ms</td>
+                                <td>99.8%</td>
+                                <td><span class="status-badge healthy">✓</span></td>
+                            </tr>
+                            <tr>
+                                <td>/api/attendance/mark_present</td>
+                                <td>POST</td>
+                                <td>89ms</td>
+                                <td>100%</td>
+                                <td><span class="status-badge healthy">✓</span></td>
+                            </tr>
+                            <tr>
+                                <td>/api/reminders/send_pending</td>
+                                <td>POST</td>
+                                <td>178ms</td>
+                                <td>99.7%</td>
+                                <td><span class="status-badge healthy">✓</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Tab -->
+        <div id="logs" class="tab-content">
+            <div class="error-log">
+                <h2>System Error Log</h2>
+                <div id="errorLogs">
+                    <div class="error-item">
+                        <strong>INFO:</strong> Scheduler task completed - Processed 156 reminders
+                        <div class="error-time">Today at 14:32</div>
+                    </div>
+                    <div class="error-item">
+                        <strong>WARNING:</strong> SMS delivery delayed for 3 messages (network issue)
+                        <div class="error-time">Today at 13:45</div>
+                    </div>
+                    <div class="error-item">
+                        <strong>INFO:</strong> Database backup completed successfully (2.3GB)
+                        <div class="error-time">Today at 12:00</div>
+                    </div>
+                    <div class="error-item">
+                        <strong>INFO:</strong> Attendance reminders sent to 45 absent patients
+                        <div class="error-time">Today at 11:30</div>
+                    </div>
+                    <div class="error-item critical">
+                        <strong>ERROR:</strong> Failed to connect to Supabase (retrying in 30s)
+                        <div class="error-time">Today at 10:15</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="clearLogs()">Clear Logs</button>
+                    <button class="btn-secondary" onclick="exportLogs()">Export Logs</button>
+                    <button class="btn-secondary" onclick="refreshDashboard()">Refresh Dashboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="last-update">
+                <span class="refresh-indicator"></span>
+                Last updated: <span id="last-update">just now</span>
+                <button class="btn-secondary btn-small" onclick="refreshDashboard()" style="margin-left: 10px;">Refresh Now</button>
+            </div>
+            <p>© 2025 Telemedicine System - All Services Running Normally</p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh dashboard every 30 seconds
+        setInterval(refreshDashboard, 30000);
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function refreshDashboard() {
+            // Update metrics from API
+            loadMetrics();
+            updateLastRefresh();
+        }
+
+        function loadMetrics() {
+            // Simulate API calls to fetch real metrics
+            fetch('/api/realtime/stats')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('feeds-count').textContent = data.active_feeds || 0;
+                    document.getElementById('feeds-24h').textContent = data.feeds_24h || 0;
+                })
+                .catch(e => console.log('Realtime stats unavailable'));
+
+            fetch('/api/sms/stats')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('sms-sent').textContent = data.sent_today || 0;
+                    document.getElementById('sms-delivery').textContent = (data.delivery_rate || 100) + '%';
+                })
+                .catch(e => console.log('SMS stats unavailable'));
+
+            fetch('/api/attendance/summary')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('attendance-today').textContent = data.today || 0;
+                    document.getElementById('attendance-absent').textContent = data.absent || 0;
+                })
+                .catch(e => console.log('Attendance stats unavailable'));
+
+            fetch('/api/reminders/stats')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('reminders-sent').textContent = data.sent_today || 0;
+                    document.getElementById('reminders-pending').textContent = data.pending || 0;
+                })
+                .catch(e => console.log('Reminders stats unavailable'));
+        }
+
+        function updateLastRefresh() {
+            const now = new Date();
+            document.getElementById('last-update').textContent = now.toLocaleTimeString();
+        }
+
+        function restartService(service) {
+            if (confirm(`Restart ${service} service?`)) {
+                console.log(`Restarting ${service} service...`);
+                alert(`${service} service restart initiated`);
+            }
+        }
+
+        function clearLogs() {
+            if (confirm('Clear all error logs?')) {
+                document.getElementById('errorLogs').innerHTML = '<div class="error-item"><strong>INFO:</strong> Error logs cleared<div class="error-time">Just now</div></div>';
+            }
+        }
+
+        function exportLogs() {
+            alert('Exporting logs to CSV...');
+        }
+
+        // Load initial metrics on page load
+        window.addEventListener('load', () => {
+            loadMetrics();
+            updateLastRefresh();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,824 @@
+<!-- Dashboard Component for Real-Time Updates and SMS Management -->
+<!-- Save as: dashboard-enhanced.html or integrate into existing dashboard -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemedicine Dashboard - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .list-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge.present {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge.absent {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge.sent {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button.secondary {
+            background: #6c757d;
+        }
+
+        button.secondary:hover {
+            background: #5a6268;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .feed-item {
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .feed-item-time {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .feed-item-type {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .feed-item-content {
+            color: #333;
+        }
+
+        .conversation {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message.sent {
+            background: #e7f3ff;
+            justify-content: flex-end;
+        }
+
+        .message.received {
+            background: #f9f9f9;
+        }
+
+        .message-bubble {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            max-width: 60%;
+        }
+
+        .message.sent .message-bubble {
+            background: #667eea;
+            color: white;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 3px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 Telemedicine Dashboard - Enhanced Features</h1>
+            <p>Real-time data sharing, SMS management, attendance tracking & reminders</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('realtime')">📊 Real-Time Feed</button>
+            <button class="tab-btn" onclick="switchTab('sms')">💬 SMS Chat</button>
+            <button class="tab-btn" onclick="switchTab('attendance')">📋 Attendance</button>
+            <button class="tab-btn" onclick="switchTab('reminders')">🔔 Reminders</button>
+            <button class="tab-btn" onclick="switchTab('stats')">📈 Statistics</button>
+        </div>
+
+        <!-- REAL-TIME FEED TAB -->
+        <div id="realtime" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <h3>🔄 Real-Time Feed</h3>
+                    <div id="feed-controls" class="form-group">
+                        <label>Select Patient:</label>
+                        <input type="number" id="feed-patient-id" placeholder="Patient ID" value="1">
+                        <button onclick="loadRealTimeFeed()">Load Feed</button>
+                    </div>
+                    <div id="feed-container" style="max-height: 500px; overflow-y: auto;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>👥 Department Overview</h3>
+                    <div id="department-stats"></div>
+                    <button onclick="loadDepartmentFeeds()" style="margin-top: 15px;">Refresh</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SMS CHAT TAB -->
+        <div id="sms" class="tab-content">
+            <div class="two-col">
+                <div class="card">
+                    <h3>📤 Send SMS</h3>
+                    <form onsubmit="sendSMS(event)">
+                        <div class="form-group">
+                            <label>Patient ID:</label>
+                            <input type="number" id="sms-patient-id" placeholder="Patient ID" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number:</label>
+                            <input type="tel" id="sms-phone" placeholder="+255789123456" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Message:</label>
+                            <textarea id="sms-message" placeholder="Enter your message here..." required></textarea>
+                            <small id="char-count">0/160 characters</small>
+                        </div>
+                        <button type="submit">Send SMS</button>
+                    </form>
+                    <div id="sms-send-response" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Conversation History</h3>
+                    <div class="form-group">
+                        <label>Patient ID:</label>
+                        <input type="number" id="conv-patient-id" placeholder="Patient ID" value="1">
+                        <button onclick="loadConversation()">Load Conversation</button>
+                    </div>
+                    <div id="conversation" class="conversation"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ATTENDANCE TAB -->
+        <div id="attendance" class="tab-content">
+            <div class="two-col">
+                <div class="card">
+                    <h3>✓ Mark Attendance</h3>
+                    <div class="form-group">
+                        <label>Patient ID:</label>
+                        <input type="number" id="attend-patient-id" placeholder="Patient ID" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Appointment ID (optional):</label>
+                        <input type="number" id="attend-appt-id" placeholder="Appointment ID">
+                    </div>
+                    <button onclick="markPresent()">✓ Mark Present</button>
+                    <button onclick="markAbsent()" class="secondary" style="margin-left: 10px;">✗ Mark Absent</button>
+                    <div id="attend-response" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Attendance Records</h3>
+                    <div class="form-group">
+                        <label>Patient ID:</label>
+                        <input type="number" id="record-patient-id" placeholder="Patient ID" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Days to Show:</label>
+                        <input type="number" id="record-days" value="30" min="1">
+                        <button onclick="loadAttendanceRecords()">Load Records</button>
+                    </div>
+                    <div id="attendance-stats"></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <h3>🚨 High Absence Patients</h3>
+                <button onclick="loadHighAbsencePatients()">Load High Absence List</button>
+                <div id="high-absence-list" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        <!-- REMINDERS TAB -->
+        <div id="reminders" class="tab-content">
+            <div class="two-col">
+                <div class="card">
+                    <h3>🔔 Create Reminder</h3>
+                    <form onsubmit="createReminder(event)">
+                        <div class="form-group">
+                            <label>Patient ID:</label>
+                            <input type="number" id="rem-patient-id" placeholder="Patient ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Reminder Type:</label>
+                            <select id="rem-type" required>
+                                <option value="appointment">Appointment</option>
+                                <option value="absent">Absence Alert</option>
+                                <option value="follow_up">Follow-up</option>
+                                <option value="medication">Medication</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Title:</label>
+                            <input type="text" id="rem-title" placeholder="Reminder title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Message:</label>
+                            <textarea id="rem-message" placeholder="Reminder message" required></textarea>
+                        </div>
+                        <button type="submit">Create Reminder</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>📤 Send Automated Reminders</h3>
+                    <button onclick="sendAbsenceReminder()" style="width: 100%; margin-bottom: 10px;">
+                        Send Absence Reminders (2+ days)
+                    </button>
+                    <button onclick="sendAppointmentReminders()" style="width: 100%; margin-bottom: 10px;" class="secondary">
+                        Send Appointment Reminders (24h)
+                    </button>
+                    <button onclick="loadPendingReminders()" style="width: 100%;" class="secondary">
+                        Load Pending Reminders
+                    </button>
+                    <div id="pending-reminders" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATISTICS TAB -->
+        <div id="stats" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h3>📊 System Statistics</h3>
+                    <div id="system-stats"></div>
+                    <button onclick="loadSystemStats()" style="margin-top: 15px;">Refresh</button>
+                </div>
+
+                <div class="card">
+                    <h3>💬 SMS Statistics</h3>
+                    <div id="sms-stats"></div>
+                    <button onclick="loadSMSStats()" style="margin-top: 15px;">Refresh</button>
+                </div>
+
+                <div class="card">
+                    <h3>🔔 Reminder Statistics</h3>
+                    <div id="reminder-stats"></div>
+                    <button onclick="loadReminderStats()" style="margin-top: 15px;">Refresh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let authToken = localStorage.getItem('authToken') || 'your-auth-token-here';
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // API calls
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'x-auth-token': authToken,
+                    'Content-Type': 'application/json'
+                }
+            };
+            if (data) options.body = JSON.stringify(data);
+            
+            try {
+                const response = await fetch(endpoint, options);
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                return { error: error.message };
+            }
+        }
+
+        // Real-Time Feed Functions
+        async function loadRealTimeFeed() {
+            const patientId = document.getElementById('feed-patient-id').value;
+            const result = await apiCall(`${API_BASE}/realtime.php?action=feeds&patient_id=${patientId}&limit=50`);
+            
+            const container = document.getElementById('feed-container');
+            if (result.feeds) {
+                container.innerHTML = result.feeds.map(feed => `
+                    <div class="feed-item">
+                        <div class="feed-item-time">${new Date(feed.timestamp).toLocaleString()}</div>
+                        <div class="feed-item-type">${feed.event_type.toUpperCase()}</div>
+                        <div class="feed-item-content">
+                            Event by: <strong>${feed.full_name}</strong> (${feed.role})
+                            <br>${JSON.stringify(feed.event_data).substring(0, 100)}...
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<div class="alert error">No feeds found</div>';
+            }
+        }
+
+        async function loadDepartmentFeeds() {
+            const result = await apiCall(`${API_BASE}/realtime.php?action=stats&patient_id=1`);
+            const container = document.getElementById('department-stats');
+            if (result.stats) {
+                container.innerHTML = `
+                    <div class="stat-label">Consultations</div>
+                    <div class="stat-value">${result.stats.consultations}</div>
+                    <div class="stat-label">Pending Medications</div>
+                    <div class="stat-value">${result.stats.pending_medications}</div>
+                    <div class="stat-label">Total Visits</div>
+                    <div class="stat-value">${result.stats.visits}</div>
+                `;
+            }
+        }
+
+        // SMS Functions
+        async function sendSMS(e) {
+            e.preventDefault();
+            const patientId = document.getElementById('sms-patient-id').value;
+            const phone = document.getElementById('sms-phone').value;
+            const message = document.getElementById('sms-message').value;
+
+            const result = await apiCall(`${API_BASE}/sms.php?action=send_sms`, 'POST', {
+                patient_id: patientId,
+                phone_number: phone,
+                message: message
+            });
+
+            const responseDiv = document.getElementById('sms-send-response');
+            if (result.status === 'success') {
+                responseDiv.innerHTML = `<div class="alert success">✓ SMS sent successfully! (ID: ${result.sms_id})</div>`;
+                document.getElementById('sms-message').value = '';
+            } else {
+                responseDiv.innerHTML = `<div class="alert error">✗ Error: ${result.error}</div>`;
+            }
+        }
+
+        async function loadConversation() {
+            const patientId = document.getElementById('conv-patient-id').value;
+            const result = await apiCall(`${API_BASE}/sms.php?action=get_conversation&patient_id=${patientId}`);
+            
+            const container = document.getElementById('conversation');
+            if (result.conversation) {
+                container.innerHTML = result.conversation.map(msg => `
+                    <div class="message ${msg.message_type}">
+                        <div class="message-bubble">
+                            ${msg.message_text}
+                            <div class="message-time">${new Date(msg.created_at).toLocaleTimeString()}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Attendance Functions
+        async function markPresent() {
+            const patientId = document.getElementById('attend-patient-id').value;
+            const appointmentId = document.getElementById('attend-appt-id').value;
+            
+            const result = await apiCall(`${API_BASE}/attendance.php?action=mark_present`, 'POST', {
+                patient_id: patientId,
+                appointment_id: appointmentId || null
+            });
+
+            const responseDiv = document.getElementById('attend-response');
+            if (result.status === 'success') {
+                responseDiv.innerHTML = `<div class="alert success">✓ ${result.message}</div>`;
+            } else {
+                responseDiv.innerHTML = `<div class="alert error">✗ Error: ${result.error}</div>`;
+            }
+        }
+
+        async function markAbsent() {
+            const patientId = document.getElementById('attend-patient-id').value;
+            const appointmentId = document.getElementById('attend-appt-id').value;
+            
+            const result = await apiCall(`${API_BASE}/attendance.php?action=mark_absent`, 'POST', {
+                patient_id: patientId,
+                appointment_id: appointmentId || null
+            });
+
+            const responseDiv = document.getElementById('attend-response');
+            if (result.status === 'success') {
+                responseDiv.innerHTML = `<div class="alert success">✓ ${result.message}<br>Consecutive Absences: ${result.consecutive_absences}</div>`;
+            } else {
+                responseDiv.innerHTML = `<div class="alert error">✗ Error: ${result.error}</div>`;
+            }
+        }
+
+        async function loadAttendanceRecords() {
+            const patientId = document.getElementById('record-patient-id').value;
+            const days = document.getElementById('record-days').value;
+            
+            const result = await apiCall(`${API_BASE}/attendance.php?action=get_records&patient_id=${patientId}&days=${days}`);
+            
+            const container = document.getElementById('attendance-stats');
+            if (result.statistics) {
+                container.innerHTML = `
+                    <div class="stat-label">Present</div>
+                    <div class="stat-value">${result.statistics.present}</div>
+                    <div class="stat-label">Absent</div>
+                    <div class="stat-value">${result.statistics.absent}</div>
+                    <div class="stat-label">Total Records</div>
+                    <div class="stat-value">${result.statistics.total}</div>
+                    <div class="stat-label">Attendance Rate</div>
+                    <div class="stat-value">${result.statistics.attendance_rate}%</div>
+                `;
+            }
+        }
+
+        async function loadHighAbsencePatients() {
+            const result = await apiCall(`${API_BASE}/attendance.php?action=high_absence&threshold=2`);
+            
+            const container = document.getElementById('high-absence-list');
+            if (result.high_absence_patients && result.high_absence_patients.length > 0) {
+                container.innerHTML = result.high_absence_patients.map(p => `
+                    <div class="list-item">
+                        <div>
+                            <strong>${p.name}</strong> (ID: ${p.patient_id})<br>
+                            <small>${p.phone}</small>
+                        </div>
+                        <span class="badge absent">${p.consecutive_absences} absences</span>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<div class="alert info">No patients with 2+ absences</div>';
+            }
+        }
+
+        // Reminders Functions
+        async function createReminder(e) {
+            e.preventDefault();
+            const result = await apiCall(`${API_BASE}/reminders.php?action=create`, 'POST', {
+                patient_id: document.getElementById('rem-patient-id').value,
+                reminder_type: document.getElementById('rem-type').value,
+                title: document.getElementById('rem-title').value,
+                message: document.getElementById('rem-message').value
+            });
+
+            if (result.status === 'success') {
+                alert('Reminder created! ID: ' + result.reminder_id);
+                e.target.reset();
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+
+        async function sendAbsenceReminder() {
+            const patientId = prompt('Enter Patient ID:');
+            if (!patientId) return;
+            
+            const result = await apiCall(`${API_BASE}/reminders.php?action=send_absence_reminder`, 'POST', {
+                patient_id: patientId
+            });
+
+            alert(result.status === 'success' ? 'Reminder sent!' : 'Error: ' + result.error);
+        }
+
+        async function sendAppointmentReminders() {
+            const consultationId = prompt('Enter Consultation ID:');
+            if (!consultationId) return;
+            
+            const result = await apiCall(`${API_BASE}/reminders.php?action=send_appointment_reminder`, 'POST', {
+                consultation_id: consultationId
+            });
+
+            alert(result.status === 'success' ? 'Reminder sent!' : 'Error: ' + result.error);
+        }
+
+        async function loadPendingReminders() {
+            const result = await apiCall(`${API_BASE}/reminders.php?action=pending&limit=50`);
+            
+            const container = document.getElementById('pending-reminders');
+            if (result.pending_reminders) {
+                container.innerHTML = result.pending_reminders.map(r => `
+                    <div class="list-item">
+                        <div>
+                            <strong>${r.title}</strong> - ${r.patient_name}<br>
+                            <small>${r.message.substring(0, 50)}...</small>
+                        </div>
+                        <span class="badge pending">${r.reminder_type}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Statistics Functions
+        async function loadSystemStats() {
+            const result = await apiCall(`${API_BASE}/realtime.php?action=stats&patient_id=1`);
+            const container = document.getElementById('system-stats');
+            if (result.stats) {
+                container.innerHTML = `
+                    <div class="list-item">
+                        <span>Total Consultations</span>
+                        <strong>${result.stats.consultations}</strong>
+                    </div>
+                    <div class="list-item">
+                        <span>Pending Medications</span>
+                        <strong>${result.stats.pending_medications}</strong>
+                    </div>
+                    <div class="list-item">
+                        <span>Total Visits</span>
+                        <strong>${result.stats.visits}</strong>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadSMSStats() {
+            const result = await apiCall(`${API_BASE}/sms.php?action=stats`);
+            const container = document.getElementById('sms-stats');
+            if (result.stats) {
+                container.innerHTML = `
+                    <div class="list-item">
+                        <span>SMS Sent</span>
+                        <strong>${result.stats.total_sent}</strong>
+                    </div>
+                    <div class="list-item">
+                        <span>SMS Received</span>
+                        <strong>${result.stats.total_received}</strong>
+                    </div>
+                    <div class="list-item">
+                        <span>Failed</span>
+                        <strong>${result.stats.failed}</strong>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadReminderStats() {
+            const result = await apiCall(`${API_BASE}/reminders.php?action=stats`);
+            const container = document.getElementById('reminder-stats');
+            if (result.stats) {
+                container.innerHTML = `
+                    <div class="list-item">
+                        <span>Total Reminders</span>
+                        <strong>${result.stats.total}</strong>
+                    </div>
+                    <div class="list-item">
+                        <span>Sent</span>
+                        <strong>${result.stats.sent}</strong>
+                    </div>
+                    <div class="list-item">
+                        <span>Pending</span>
+                        <strong>${result.stats.pending}</strong>
+                    </div>
+                    <div class="list-item">
+                        <span>Failed</span>
+                        <strong>${result.stats.failed}</strong>
+                    </div>
+                `;
+            }
+        }
+
+        // SMS character counter
+        document.addEventListener('DOMContentLoaded', () => {
+            const msgInput = document.getElementById('sms-message');
+            if (msgInput) {
+                msgInput.addEventListener('input', (e) => {
+                    document.getElementById('char-count').textContent = 
+                        `${e.target.value.length}/160 characters`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

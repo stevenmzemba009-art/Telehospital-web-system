@@ -1,0 +1,101 @@
+# Local XAMPP Configuration
+.env
+.env.local
+.env.*.local
+config/credentials.php
+config/secrets.php
+
+# Database Files
+database.bak.sql
+*.backup
+*.bak
+*.sql.bak
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# IDE and Editor
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Dependencies
+vendor/
+node_modules/
+composer.lock
+package-lock.json
+
+# Logs
+*.log
+logs/
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+.tmp/
+
+# Cache
+cache/
+*.cache
+__pycache__/
+.cache/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Private/Local Files
+private/
+local_config.php
+local_settings.php
+
+# Testing
+test_results/
+coverage/
+.phpunit.result.cache
+
+# Build Artifacts
+dist/
+build/
+
+# Session Files (XAMPP local sessions)
+sessions/
+*.sess
+
+# Backups
+backups/
+*.backup
+
+# Configuration Overrides (local development)
+config/db.local.php
+settings.local.php
+
+# IDE specific files
+.editorconfig.local
+.idea/
+.vscode/settings.json
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Sensitive Data
+credentials.txt
+passwords.txt
+secrets.json
+
+# XAMPP Specific
+mysql/data/
+apache/logs/
+php/tmp/
